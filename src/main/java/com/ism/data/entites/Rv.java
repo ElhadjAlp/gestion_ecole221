@@ -5,16 +5,23 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
+
 @Getter 
 @Setter
 @ToString
 @EqualsAndHashCode()
-public class Client {
+
+
+public class Rv {
+
+
     private int id;
-    private String surname;
-    private String telephone;
-    private String adresse;
+    private String date;
+    private String heure;
+   
 
 
-    private User user;
+    private Rv rv;
 }
+

@@ -1,30 +1,35 @@
 package com.ism.core.factory;
 
-import com.ism.data.repository.ClientRepository;
-import com.ism.data.repository.UserRepository;
-import com.ism.data.repository.bd.ClientRepositoryBD;
-import com.ism.data.repository.bd.UserRepositoryBD;
+import com.ism.data.repository.MedecinRepository;
+import com.ism.data.repository.RvRepository;
+import com.ism.data.repository.bd.MedecinRepositoryBD;
+import com.ism.data.repository.bd.RvRepositoryBD;
 
 public class Factory {
     private Factory() {
-
+       
     }
 
-    private static ClientRepository clientRepository = null;
-    private static UserRepository userRepository = null;
+    private static MedecinRepository clientRepository = null;
+    private static RvRepository rvRepository = null;
 
-    public static ClientRepository getInstanceClientRepository() {
+    public static MedecinRepository getInstanceClientRepository() {
         if (clientRepository == null) {
-            clientRepository = new ClientRepositoryBD(getInstanceUserRepository());
+            clientRepository = new MedecinRepositoryBD(getInstanceRvRepository());
         }
         return clientRepository;
     }
 
-    public static UserRepository getInstanceUserRepository() {
-        if (userRepository == null) {
-            userRepository = new UserRepositoryBD();
+    public static RvRepository getInstanceRvRepository() {
+        if (rvRepository == null) {
+            rvRepository = new RvRepositoryBD();
         }
-        return userRepository;
+        return rvRepository;
     }
 
+    public static MedecinRepository getInstanceMedecinRepository() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getInstanceMedecinRepository'");
+    }
 }
+

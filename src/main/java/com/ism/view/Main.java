@@ -4,94 +4,92 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.ism.core.factory.Factory;
-import com.ism.data.entites.Client;
-import com.ism.data.entites.User;
-import com.ism.data.enums.RoleEnum;
-import com.ism.services.ClientService;
-import com.ism.services.UserService;
-import com.ism.services.Impl.ClientServiceImpl;
-import com.ism.services.Impl.UserServiceImpl;
+import com.ism.data.entites.Medecin;
+import com.ism.services.MedecinService;
+import com.ism.services.RvService;
+import com.ism.services.Impl.MedecinServiceImpl;
+import com.ism.services.Impl.RvServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
         int choix;
         Scanner scanner = new Scanner(System.in);
 
+        // Service pour les médecins
+        MedecinService medecinServiceImpl = new MedecinServiceImpl(
+                Factory.getInstanceMedecinRepository());
 
-        ClientService clientServiceImpl = new ClientServiceImpl(
-                Factory.getInstanceClientRepository());
+        // Service pour les rendez-vous
+        RvService rvServiceImpl = new RvServiceImpl(Factory.getInstanceRvRepository());
 
-        UserService userServiceImpl = new UserServiceImpl(Factory.getInstanceUserRepository());
-
-        Client client;
+        Medecin medecin;
         do {
-            System.out.println("1-Creer Client");
-            System.out.println("2-Lister Client");
-            System.out.println("3-Rechercher  Client Par Telephone");
-            System.out.println("4-Creer un Compte User");
-            System.out.println("5-Lister les comptes User");
+            System.out.println("1-Creer medecin");
+            System.out.println("2-Lister Medecins");
+            System.out.println("3-Filtrer par Telephone");
+            System.out.println("4-Creer un Rv");
+            System.out.println("5-Lister les Rv");
             System.out.println("6-Quitter");
             choix = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine();  
+            
             switch (choix) {
                 case 1:
-                    // Entite
-                    client = new Client();
+                   
+                    medecin = new Medecin();
                     System.out.println("Entrer le surnom");
                     String surname = scanner.nextLine();
-                    if (clientServiceImpl.searchClientBySurname(surname) != null) {
-                        System.out.println("Le surname esxiste deja");
+                    Object nom;
+                    if (medecinServiceImpl.searchMedecinByDate(nom) != null) {
+                        System.out.println("Le nom existe déjà");
                     } else {
-                        client.setSurname(surname);
-                        System.out.println("Entrer le Telephone");
-                        client.setTelephone(scanner.nextLine());
-                        System.out.println("Entrer l'adresse");
-                        client.setAdresse(scanner.nextLine());
-                        System.out.println("Voulez vous associez un compte a ce client O/N");
+                        medecin.setNom(surname);
+                        System.out.println("Entrer le NOM");
+                        medecin.setNom(scanner.nextLine());
+                        System.out.println("Entrer Prenom");
+                        medecin.setPrenom(scanner.nextLine());
+                        System.out.println("Voulez-vous associer un compte à ce médecin ? O/N");
                         char res = scanner.next().charAt(0);
                         scanner.nextLine();
                         if (res == 'O') {
-                            User user = new User();
-                            System.out.println("Entrer Nom ");
-                            user.setNom(scanner.nextLine());
-                            System.out.println("Entrer le Prenom");
-                            user.setPrenom(scanner.nextLine());
-                            System.out.println("Entrer le Login");
-                            user.setLogin(scanner.nextLine());
-                            System.out.println("Entrer le Password");
-                            user.setPassword(scanner.nextLine());
-                            user.setRole(RoleEnum.CLIENT);
-                            client.setUser(user);
+                            System.out.println("Entrer le nom ");
+                            medecin.setNom(scanner.nextLine());
+                            System.out.println("Entrer le prénom");
+                            medecin.setPrenom(scanner.nextLine());
                         }
 
-                        clientServiceImpl.createClient(client);
-
+                        medecinServiceImpl.createMedecin(medecin);
                     }
                     break;
                 case 2:
-                    List<Client> list = clientServiceImpl.findAllClient();
+                    
+                    List<Medecin> list = medecinServiceImpl.findAllMedecins();
                     list.forEach(System.out::println);
                     break;
                 case 3:
-                    System.out.println("Entrer le Telephone");
+                    
+                    System.out.println("Entrer le téléphone");
                     String tel = scanner.nextLine();
-                    client = clientServiceImpl.searchClient(tel);
-                    if (client == null) {
-                        System.out.println("Pas de client");
+                    medecin = medecinServiceImpl.searchMedecin(tel);
+                    if (medecin == null) {
+                        System.out.println("Pas de médecin trouvé");
                     } else {
-                        System.out.println(client);
+                        System.out.println(medecin);
                     }
-
                     break;
                 case 4:
+                    
                     break;
-
                 case 5:
-                    List<User> listUsers = userServiceImpl.findAllUser();
-                    listUsers.forEach(System.out::println);
+                    
+                    List<Medecin> listMedecins = rvServiceImpl.findAllMedecins();
+                    listMedecins.forEach(System.out::println);
                     break;
-
+                case 6:
+                    System.out.println("Au revoir !");
+                    break;
                 default:
+                    System.out.println("Choix invalide");
                     break;
             }
 

@@ -4,21 +4,20 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.ism.core.Repository.impl.RepositoryBDImpl;
-import com.ism.data.entites.User;
-import com.ism.data.enums.RoleEnum;
-import com.ism.data.repository.UserRepository;
+import com.ism.data.entites.Medecin;
+import com.ism.data.repository.RvRepository;
 
 import java.sql.*;
 
 
-public class UserRepositoryBD extends RepositoryBDImpl<User> implements UserRepository {
+public class RvRepositoryBD extends RepositoryBDImpl<Medecin> implements RvRepository {
 
-    public UserRepositoryBD(){
-        this.tableName = "user";
+    public RvRepositoryBD(){
+        this.tableName = "rv";
     }
     @Override
-    public User selectByLogin(String login) {
-        User result = null;
+    public Medecin selectByLogin(String login) {
+        Medecin result = null;
 
         try {
             String sql = String.format("select * from %s where login like ?",this.tableName);
@@ -45,19 +44,16 @@ public class UserRepositoryBD extends RepositoryBDImpl<User> implements UserRepo
     }
 
     @Override
-    public void insert(User data) {
+    public void insert(Medecin data) {
 
         try {
 
-            String sql = "INSERT INTO `user` (`nom`, `prenom`, `login`, `password`, `role`, `etat`) VALUES (?,?,?,?,?, '1');";
+            String sql = "INSERT INTO `rv` ( `id`,`nom`, `prenom`) VALUES (?,?,? '1');";
             this.getConnection();
             this.initPreparedStatement(sql);
- 
-            this.ps.setString(1, data.getNom());
-            this.ps.setString(2, data.getPrenom());
-            this.ps.setString(3, data.getLogin());
-            this.ps.setString(4, data.getPassword());
-            this.ps.setString(5, data.getRole().name());
+            this.ps.setInt(1, data.getId());
+            this.ps.setString(2, data.getNom());
+            this.ps.setString(3, data.getPrenom());
             this.executeUpdate();
             ResultSet rs = this.ps.getGeneratedKeys();
             if (rs.next()) {
@@ -78,8 +74,8 @@ public class UserRepositoryBD extends RepositoryBDImpl<User> implements UserRepo
     }
 
     @Override
-    public List<User> selectAll() {
-        List<User> clients = new ArrayList<User>();
+    public List<Medecin> selectAll() {
+        List<Medecin> medecins = new ArrayList<Medecin>();
         try {
 
             String sql = "select * from user";
@@ -88,7 +84,7 @@ public class UserRepositoryBD extends RepositoryBDImpl<User> implements UserRepo
 
             ResultSet rs = this.ps.executeQuery();
             while (rs.next()) {
-                clients.add(this.convertToObject(rs));
+                medecins.add(this.convertToObject(rs));
             }
             rs.close();
 
@@ -102,25 +98,23 @@ public class UserRepositoryBD extends RepositoryBDImpl<User> implements UserRepo
                 e.printStackTrace();
             }
         }
-        return clients;
+        return medecins;
     }
 
     @Override
-    public User convertToObject(ResultSet rs) throws SQLException {
-        User user = new User();
-        user.setId(rs.getInt("id"));
-        user.setNom(rs.getString("nom"));
-        user.setPrenom(rs.getString("prenom"));
-        user.setLogin(rs.getString("login"));
-        user.setRole(RoleEnum.getValue(rs.getString("role")));
-        user.setEtat(rs.getBoolean("etat"));
-        return user;
+    public Medecin convertToObject(ResultSet rs) throws SQLException {
+        Medecin rv = new Medecin();
+        rv.setId(rs.getInt("id"));
+        rv.setDate(rs.getString("date"));
+        rv.setHeure(rs.getString("heure"));
+        return rv;
+        
 
     }
 
     @Override
-    public User selectByID(int id) {
-        User result = null;
+    public Medecin selectByID(int id) {
+        Medecin result = null;
  
         try {
             String sql = "select * from user where id= ?";
