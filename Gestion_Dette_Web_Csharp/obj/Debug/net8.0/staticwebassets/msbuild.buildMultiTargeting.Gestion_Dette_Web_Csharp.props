@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Gestion_Dette_Web_Csharp.props" />
+</Project>

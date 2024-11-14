@@ -1,0 +1,102 @@
+@using Gestion_Dette_Web_Csharp.Models
+@using static GestionDette.Controllers.ClientController
+@model PaginatedClientViewModel
+
+@{
+    ViewData["Title"] = "Client Page";
+}
+
+<div class="card">
+    <div class="card-header">Liste des clients</div>
+    <div class="card-body">
+        <div class="my-2 d-flex justify-content-end">
+            <a class="btn btn-outline-dark" asp-action="Create">Nouveau client</a>
+        </div>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-primary" role="alert">
+                <strong>@TempData["Message"]</strong>
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Surnom</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">Adresse</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var client in Model.Clients)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => client.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => client.Surnom)</td>
+                            <td>@Html.DisplayFor(modelItem => client.Telephone)</td>
+                            <td>@Html.DisplayFor(modelItem => client.Adresse)</td>
+                            <td>
+                                <a href="@Url.Action("DetteClient", "Dette", new { clientId = client.Id })" class="btn btn-outline-primary">Dettes</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="float-end">
+                <ul class="pagination">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = Model.PageIndex - 1 })"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = Model.PageIndex + 1 })"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,149 @@
+@using Gestion_Dette_Web_Csharp.Models
+@using static GestionDette.Controllers.ClientController
+@model PaginatedClientViewModel
+
+@{
+    ViewData["Title"] = "Page des dettes";
+}
+
+<div class="card">
+    <div class="card-header">Liste des Dettes</div>
+    <div class="card-body">
+        <div class="my-2 d-flex justify-content-end">
+            <a class="btn btn-outline-dark" asp-action="Create">Nouveau Dette</a>
+        </div>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-primary" role="alert">
+                <strong>@TempData["Message"]</strong>
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Surnom</th>
+                        <th scope="col">Téléphone</th>
+                        <th scope="col">Adresse</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var client in Model.Clients)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => client.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => client.Surnom)</td>
+                            <td>@Html.DisplayFor(modelItem => client.Telephone)</td>
+                            <td>@Html.DisplayFor(modelItem => client.Adresse)</td>
+                            <td>
+                                <a href="@Url.Action("DetteClient", "Dette", new { clientId = client.Id })" class="btn btn-outline-primary">Voir Dettes</a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Affichage des dettes du client -->
+                        @if (client.Dettes != null && client.Dettes.Any())
+                        {
+                            <tr>
+                                <td colspan="5">
+                                    <table class="table table-sm table-bordered mt-2">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Montant</th>
+                                                <th>Montant Versé</th>
+                                                <th>Montant Restant</th>
+                                                <th>Paiements</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var dette in client.Dettes)
+                                            {
+                                                <tr>
+                                                    <td>@dette.Date.ToString("dd/MM/yyyy")</td>
+                                                    <td>@dette.Montant</td>
+                                                    <td>@dette.MontantVerser</td>
+                                                    <td>@(dette.Montant - dette.MontantVerser)</td>
+                                                    <td>
+                                                        <!-- Affichage des paiements pour chaque dette -->
+                                                        @if (dette.Paiements != null && dette.Paiements.Any())
+                                                        {
+                                                            <ul>
+                                                                @foreach (var paiement in dette.Paiements)
+                                                                {
+                                                                    <li>@paiement.Date.ToString("dd/MM/yyyy") : @paiement.Montant</li>
+                                                                }
+                                                            </ul>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>Aucun paiement</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <nav aria-label="Navigation des pages" class="float-end">
+                <ul class="pagination">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = Model.PageIndex - 1 })"
+                               aria-label="Précédent">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Précédent">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { page = Model.PageIndex + 1 })"
+                               aria-label="Suivant">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Suivant">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
