@@ -1,0 +1,33 @@
+@model Gestion_Dette_Web_Csharp.Models.Etudiant
+
+@{
+    ViewData["Title"] = "Créer un Étudiant";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Étudiant</h4>
+<hr />
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Matricule" class="control-label"></label>
+        <input asp-for="Matricule" class="form-control" />
+        <span asp-validation-for="Matricule" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NomComplet" class="control-label"></label>
+        <input asp-for="NomComplet" class="form-control" />
+        <span asp-validation-for="NomComplet" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Adresse" class="control-label"></label>
+        <input asp-for="Adresse" class="form-control" />
+        <span asp-validation-for="Adresse" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Créer</button>
+    </div>
+</form>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Retour à la liste</a>
